@@ -16,7 +16,7 @@ Primary efficacy endpoint: % change LDL at 12 weeks
 
 Reported: Absolute level of LDL at 12 weeks with 95% C.I. 
 
-![Alt text](media/alirocumab_plot.tif?raw=true "Title")  
+![Alt text](media/evolocumab_plot.gif)  
 
 ## Source 2: Efficacy and Safety of Evolocumab in Reducing Lipids and Cardiovascular Events
 
@@ -36,4 +36,4 @@ The plot above and the associated table (Supplemental Table S1) use medians and 
 Also, reported is the combination of the 2 studies above but it si unclear how the studies were combined.  
 Results need clarification. 
 
-![Alt text](media/evolocumab_plot.tif?raw=true "Title")  
+![Alt text](media/evolocumab_plot.gif)  
