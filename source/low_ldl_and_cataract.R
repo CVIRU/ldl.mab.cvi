@@ -79,7 +79,7 @@ dt2$Study <- factor(dt2$Study,
                     levels = dt2$Study)
 dt2
 
-# # Log odds ratios of getting a cataract----
+# Log odds ratios of getting a cataract----
 # mm2 <- rma(ai = dt2$`Active Cataract`,
 #            bi = dt2$`Active N` - dt2$`Active Cataract`,
 #            ci = dt2$`Control Cataract`,
@@ -92,6 +92,18 @@ dt2
 #        slab = dt2$Study)
 
 # Log odds ratios of getting a cataract, adjusted for percent delta achieved LDL---- 
+# Model with linear predictor only
+# mm2 <- rma(ai = `Active Cataract`,
+#            bi = `Active N` - `Active Cataract`,
+#            ci = `Control Cataract`,
+#            di = `Control N` - `Control Cataract`,
+#            measure = "OR",
+#            verbose = TRUE,
+#            method="DL",
+#            mods = `BL-FU`,
+#            data = dt2)
+
+# Model with square term
 mm2 <- rma(ai = `Active Cataract`,
            bi = `Active N` - `Active Cataract`,
            ci = `Control Cataract`,
@@ -99,7 +111,8 @@ mm2 <- rma(ai = `Active Cataract`,
            measure = "OR",
            verbose = TRUE,
            method="DL",
-           mods = `BL-FU`,
+           mods = as.matrix(data.table(x = `BL-FU`,
+                                       x2 = (dt2$`BL-FU`)^2)),
            data = dt2)
 mm2
 
@@ -128,6 +141,7 @@ write.csv(t1,
 # Predicted values
 mm2.pred <- predict(mm2)
 mm2.pred <- data.table(Study = dt2$Study,
+                       `Active - Placebo BL - FU % Change` = dt2$`BL-FU`,
                        `Predicted Log OR` = mm2.pred$pred,
                        `Predicted Log OR 95% L.L.` = mm2.pred$ci.lb,
                        `Predicted Log OR 95% U.L.` = mm2.pred$ci.ub)
@@ -164,3 +178,58 @@ ggplot(dt2,
   ggtitle("Cataracts in LDL Lowering Studies") +
   theme(axis.text.x = element_text(angle = 45,
                                    hjust = 1))
+
+# Fit a curve through the points
+xx <- seq(min(dt2$`BL-FU`),
+          max(dt2$`BL-FU`),
+          0.01)
+
+# With linear term only
+# pdt <- predict(mm2,
+#                newmods = xx)
+
+# With quadratic term
+pdt <- predict(mm2,
+               newmods = as.matrix(data.table(x = xx,
+                                              y = xx^2)))
+pdt <- data.table(x = xx,
+                  y = pdt$pred,
+                  y.l = pdt$ci.lb,
+                  y.u = pdt$ci.ub)
+
+
+ggplot(dt2, 
+       aes(x = `BL-FU`, 
+           y = lor)) + 
+  geom_point() +
+  geom_point(data = mm2.pred,
+             aes(x = `Active - Placebo BL - FU % Change`,
+                 y = `Predicted Log OR`),
+             size = 2,
+             col = "red") +
+  geom_line(data = pdt,
+            aes(x = x,
+                y = y),
+            size = 1,
+            col = "red") +
+  geom_line(data = pdt,
+            aes(x = x,
+                y = y.l),
+            size = 1,
+            col = "grey",
+            linetype = "dashed") +
+  geom_line(data = pdt,
+            aes(x = x,
+                y = y),
+            size = 1,
+            col = "red") +
+  geom_line(data = pdt,
+            aes(x = x,
+                y = y.u),
+            size = 1,
+            col = "grey",
+            linetype = "dashed") +
+  scale_y_continuous("Log Odds Ratio") +
+  scale_x_continuous("Active - Placebo BL - FU % Change in LDL") +
+  # ggtitle("Linear Term Only") 
+  ggtitle("Linear and Quadratic Terms, with 95% C.I.") 

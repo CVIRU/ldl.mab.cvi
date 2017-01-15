@@ -1,7 +1,7 @@
 ## Project: LDL and CV Events Reduction Through PCSK9 Inhibition by mAb Tretments   
 ## Author: Davit Sargsyan
 ## Created: 12/03/2016
-
+---
 ## Source 1: Efficacy and Safety of Alirocumab in Reducing Lipids and Cardiovascular Events  
 
 Trial: Long-term Safety and Tolerability of Alirocumab in High Cardiovascular Risk Patients with Hypercholesterolemia Not Adequately Controlled with Their Lipid Modifying Therapy (ODYSSEY LONG TERM, Phase III)
