@@ -1,16 +1,13 @@
-# Code: Mean of Truncated Normal Distribution
-# Created: 11/23/2016
-# Author: Davit Sargsyan
+# |-------------------------------------------------------|
+# | Project: A Study of Association of LDL Reduction and  | 
+# |          Cataracts Using Meta-Analysis                |
+# | Script: Mean of Truncated Normal Distribution                 |
+# | Author: Davit Sargsyan                                |
+# | Created: 11/23/2016                                   |
+# |-------------------------------------------------------|
 # Source:
 # https://assessingpsyche.wordpress.com/2014/06/04/using-the-truncated-normal-distribution/
-# Data simulation is based on reported values from:
-# 1. "Efficacy and safety of Alirocumab in reducing lipids and cardiovascular events", 
-#    Robinson et al, The New England Journal of Medicine, April 2015
-#    hhttp://www.nejm.org/doi/pdf/10.1056/NEJMoa1501031
-# 2. "Efficacy and safety of Evolocumab in reducing lipids and cardiovascular events",
-#    Sabatine et al, The New England Journal of Medicine, April 2015
-#    http://news.medlive.cn/uploadfile/20150316/14264749011448.pdf
-#*****************************************************************************************
+
 # Data----
 # Alirocumab: mean LDL level (mg/dL) at Baseline and Week 24
 mu.ali0 <- 122.8

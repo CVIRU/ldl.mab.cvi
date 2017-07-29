@@ -1,3 +1,11 @@
+# |-------------------------------------------------------|
+# | Project: A Study of Association of LDL Reduction and  | 
+# |          Cataracts Using Meta-Analysis                |
+# | Script: Meta-Regression of 18 Studies                 |
+# | Author: Davit Sargsyan                                |
+# | Created: 01/12/2017                                   |
+# |-------------------------------------------------------|
+
 # Code: Meta-Analysis of LDL and CV Events Reduction Through PCSK9 Inhibition by mAb Tretments
 # Created: 01/12/2017
 # Author: Davit Sargsyan
@@ -7,6 +15,7 @@ require(data.table)
 require(metafor)
 require(ggplot2)
 require(truncnorm)
+
 # Function to calculate truncated distribution mean----
 MeanNormalTruncated <- function(mu = 0,
                                 sigma = 1,
@@ -84,7 +93,6 @@ text(x = c(mu1, mu2),
      y = c(0.008, 0.008),
      labels = round(c(mu1, mu2)))
 
-#*************************************************************
 # Load data----
 dt2 <- fread("docs/LDL cataract meta 3April2017.csv",
              sep = ",",
@@ -100,7 +108,7 @@ mm2 <- rma(ai = `Active Cataract`,
            verbose = TRUE,
            method="DL",
            mods = as.matrix(data.table(x = LDL,
-                                       x2 = LDL^2)),
+                                       z = LDL^2)),
            data = dt2)
 mm2
 
@@ -108,7 +116,7 @@ mm2
 forest(mm2,
        slab = dt2$Study)
 
-# Estimates
+# Estimates----
 dt2$lor <- mm2$yi
 dt2$lor.var <- mm2$vi
 dt2$lor.ll95 <- mm2$yi - 1.96*sqrt(mm2$vi)
@@ -127,7 +135,7 @@ write.csv(t1,
           file = "tmp/t1.csv",
           row.names = FALSE)
 
-# Predicted values
+# Predicted values----
 mm2.pred <- predict(mm2)
 mm2.pred <- data.table(Study = dt2$Study,
                        LDL = dt2$LDL,
@@ -139,7 +147,7 @@ write.csv(mm2.pred,
           file = "tmp/t2.csv",
           row.names = FALSE)
 
-# Polygon vertices
+# Polygon vertices----
 dt.poly <- data.table(id = rep(1:11, each = 4),
                       x = rep(c(0.8, 1, 1.2, 1), 11) + rep(0:10, each = 4),
                       y = c(t(data.table(mm2.pred$`Predicted Log OR`,
@@ -147,7 +155,7 @@ dt.poly <- data.table(id = rep(1:11, each = 4),
                                          mm2.pred$`Predicted Log OR`,
                                          mm2.pred$`Predicted Log OR 95% L.L.`))))
 
-# Plot estimates and predicted values
+# Plot estimates and predicted values----
 ggplot(dt2, 
        aes(x = Study, 
            y = lor)) + 
@@ -169,24 +177,25 @@ ggplot(dt2,
   theme(axis.text.x = element_text(angle = 45,
                                    hjust = 1))
 
-# Fit a curve through the points
+# Fit a curve through the points----
 xx <- seq(min(dt2$LDL),
           max(dt2$LDL),
           0.01)
 
-# With linear term only
+# With linear term only----
 # pdt <- predict(mm2,
 #                newmods = xx)
 
-# With quadratic term
+# With quadratic term----
 pdt <- predict(mm2,
                newmods = as.matrix(data.table(x = xx,
-                                              y = xx^2)))
+                                              z = xx^2)))
 pdt <- data.table(x = xx,
                   y = pdt$pred,
                   y.l = pdt$ci.lb,
                   y.u = pdt$ci.ub)
 
+# Plot esimates----
 ggplot(dt2, 
        aes(x = LDL, 
            y = lor)) + 
